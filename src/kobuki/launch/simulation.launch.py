@@ -164,6 +164,40 @@ def generate_launch_description():
     
     fake_bumper_cmd = Node(package='kobuki', executable='fake_bumer_node', output='screen')
 
+    # Define the transformation from base_link to lidar_link
+    from_base_to_lidar_cmd = Node(package='tf2_ros',
+                                  executable='static_transform_publisher',
+                                  output='screen',
+                                  arguments=['0.0', '0.0', '0.25',  # מיקום (x, y, z)
+                                             '0.0', '0.0', '0.0',  # סיבוב (roll, pitch, yaw)
+                                             'base_link',          # מסגרת המקור
+                                             'lidar_link'])        # מסגרת היעד
+
+    # Define the transformation from base_link to camera_link
+    from_base_to_camera_cmd = Node(package='tf2_ros',
+                                   executable='static_transform_publisher',
+                                   output='screen',
+                                   arguments=['0.15', '0.0', '0.17',  # מיקום (x, y, z)
+                                              '0.0', '0.0', '0.0',  # סיבוב (roll, pitch, yaw)
+                                              'base_link',          # מסגרת המקור
+                                              'camera_link'])       # מסגרת היעד
+
+    # Define the transformation from map to base_link
+    from_map_to_base_cmd = Node(package='tf2_ros',
+                                executable='static_transform_publisher',
+                                output='screen',
+                                arguments=['0.0', '0.0', '0.0',  # מיקום (x, y, z)
+                                           '0.0', '0.0', '0.0',  # סיבוב (roll, pitch, yaw)
+                                           'map',                # מסגרת המקור
+                                           'base_link'])         # מסגרת היעד
+    
+    from_footprint_to_base_cmd = Node(package='tf2_ros',
+                                  executable='static_transform_publisher',
+                                  output='screen',
+                                  arguments=['0.0', '0.0', '0.0',  # מיקום (x, y, z)
+                                             '0.0', '0.0', '0.0',  # סיבוב (roll, pitch, yaw)
+                                             'base_footprint',     # מסגרת המקור
+                                             'base_link'])         # מסגרת היעד
     ld = LaunchDescription()
     ld.add_action(declare_world_cmd)
     ld.add_action(declare_x_cmd)
@@ -179,6 +213,10 @@ def generate_launch_description():
     ld.add_action(robot_entity_cmd)
     ld.add_action(world_entity_cmd)
     ld.add_action(fake_bumper_cmd)
+    ld.add_action(from_footprint_to_base_cmd)
+    ld.add_action(from_base_to_lidar_cmd)
+    ld.add_action(from_base_to_camera_cmd)
+    ld.add_action(from_map_to_base_cmd)
 
     packages = ['kobuki_description']
     model_path = get_model_paths(packages)
@@ -194,3 +232,5 @@ def generate_launch_description():
     ld.add_action(gazebo)
 
     return ld
+
+
