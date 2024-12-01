@@ -21,21 +21,25 @@ RUN apt-get update && apt-get install -y \
     libusb-1.0-0-dev libftdi1-dev libuvc-dev && \
     rm -rf /var/lib/apt/lists/*
 
-WORKDIR /kobuki_ws/src
-RUN git clone https://github.com/cognimbus/kobuki-drivers-humble.git && \
-    vcs import < kobuki/thirdparty.repos
+
+RUN git clone https://github.com/cognimbus/kobuki-drivers-humble.git
+
+WORKDIR /kobuki-drivers-humble/src
+RUN vcs import < kobuki/thirdparty.repos
 
 
 
-WORKDIR /kobuki_ws
+WORKDIR /kobuki-drivers-humble
 RUN sh /opt/ros/humble/setup.sh && \
     rosdep update && \
     apt update && \
-    rosdep install -i --from-path src --ignore-src --rosdistro humble -y && \
-    . /opt/ros/humble/setup.sh && colcon build --symlink-install --parallel-workers 1 --packages-skip gazebo_plugins aws_robomaker_bookstore_world aws_robomaker_racetrack_world aws_robomaker_small_house_world aws_robomaker_small_warehouse_world
+    rosdep install -i --from-path src --ignore-src --rosdistro humble -y --skip-keys="gazebo gazebo_plugins ros-humble-gazebo-ros ros-humble-gazebo-dev ros-humble-gazebo-plugins ros-humble-gazebo-msgs ros-humble-gazebo-ros-pkgs libgazebo-dev" || true
+
+RUN . /opt/ros/humble/setup.sh && colcon build --symlink-install --parallel-workers 1 --packages-skip gazebo_plugins gazebo_ros gazebo_dev aws_robomaker_bookstore_world aws_robomaker_racetrack_world aws_robomaker_small_house_world aws_robomaker_small_warehouse_world
+
 
 RUN echo "source /opt/ros/humble/setup.bash" >> ~/.bashrc && \
-    echo "source /kobuki_ws/src/install/setup.bash" >> ~/.bashrc
+    echo "source /kobuki-drivers-humble/src/install/setup.bash" >> ~/.bashrc
 
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh

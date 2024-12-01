@@ -3,5 +3,5 @@
 source /opt/ros/humble/setup.bash
 # Source the Kobuki workspace setup
 
-source ./kobuki_ws/install/setup.bash
+source ./kobuki-drivers-humble/install/setup.bash
 exec "$@"
