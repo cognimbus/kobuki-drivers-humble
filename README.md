@@ -1,4 +1,4 @@
-commands to launch the robots: from ~/kobuki_ws/src
+<span style="color: purple">commands to launch the robots: from ~/kobuki-drivers-humble</span>
 
 # Robot Launch Commands
 
@@ -6,7 +6,7 @@ commands to launch the robots: from ~/kobuki_ws/src
 
 ros2 launch realsense2_camera rs_launch.py
 
-## RPLidar
+## RPLidar - according to your LiDAR model
 
 ros2 launch sllidar_ros2 view_sllidar_a2m8_launch.py scan_mode:=Express
 
@@ -28,15 +28,15 @@ ros2 launch robot_launchers qualcomm_robot.launch.py
 
 # Copy UDEV Rules for Devices
 
-sudo cp /kobuki_ws/src/ThirdParty/ros_astra_camera/astra_camera/scripts/56-orbbec-usb.rules /etc/udev/rules.d/
-sudo cp /kobuki_ws/src/ThirdParty/rplidar_ros/scripts/rplidar.rules /etc/udev/rules.d/
+sudo cp /kobuki_ws/src/ThirdParty/ros_astra_camera/astra_camera/scripts/56-orbbec-usb.rules /etc/udev/rules.d/ \
+sudo cp /kobuki_ws/src/ThirdParty/rplidar_ros/scripts/rplidar.rules /etc/udev/rules.d/ \
 sudo cp /kobuki_ws/src/ThirdParty/kobuki_ros/60-kobuki.rules /etc/udev/rules.d/
 
 # Set Permissions for Devices
 
-chmod 777 /dev/ttyUSB0
-chmod 777 /dev/video0
-sudo chmod 777 /dev/ttyACM0
+chmod 777 /dev/ttyUSB0 \
+chmod 777 /dev/video0 \
+sudo chmod 777 /dev/ttyACM0 \
 
 # Kobuki Robot Configuration
 
@@ -45,17 +45,17 @@ Update the configuration file at `src/kobuki/config/kobuki_node_params.yaml` wit
 GNU nano 6.2 kobuki_node_params.yaml  
 kobuki_ros_node:
 ros\_\_parameters:
-acceleration_limiter: true
-battery_capacity: 16.5
-battery_low: 14.0
-battery_dangerous: 13.2
-device_port: /dev/ttyUSB0 or /dev/kobuki
-cmd_vel_timeout_sec: 0.6
-odom_frame: odom
-base_frame: base_link
-publish_tf: true
-use_imu_heading: true
-wheel_left_joint_name: wheel_left_joint
+acceleration_limiter: true \
+battery_capacity: 16.5 \
+battery_low: 14.0 \
+battery_dangerous: 13.2 \
+device_port: /dev/ttyUSB0 or /dev/kobuki \
+cmd_vel_timeout_sec: 0.6 \
+odom_frame: odom \
+base_frame: base_link \
+publish_tf: true \
+use_imu_heading: true \
+wheel_left_joint_name: wheel_left_joint \  
 wheel_right_joint_name: wheel_right_joint
 
 # Hokuyo LiDAR Configuration
@@ -67,16 +67,16 @@ scan_mode=Express port=/dev/rplidar
 Define UDEV rules if not already done :
 sudo nano /etc/udev/rules.d/99-ros-usb.rules
 
-SUBSYSTEM=="tty", ATTRS{idVendor}=="10c4", ATTRS{idProduct}=="ea60", SYMLINK+="rplidar", MODE="0666"
+SUBSYSTEM=="tty", ATTRS{idVendor}=="10c4", ATTRS{idProduct}=="ea60", SYMLINK+="rplidar", MODE="0666" \
 
-SUBSYSTEM=="tty", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", SYMLINK+="kobuki", MODE="0666"
+SUBSYSTEM=="tty", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", SYMLINK+="kobuki", MODE="0666" \
 
 Save the file and apply the changes:
 
 sudo udevadm control --reload-rules
 sudo udevadm trigger
 
-ln -sf /dev/ttyUSB1 /dev/rplidar
+ln -sf /dev/ttyUSB1 /dev/rplidar \
 ln -sf /dev/ttyUSB0 /dev/kobuki
 
 Run the container:
@@ -115,3 +115,11 @@ ros2 launch slam_toolbox online_async_launch.py scan_topic:=/scan
 ## Navigation
 
 ros2 launch nav2_bringup navigation_launch.py
+
+# Working Through Docker
+
+For a streamlined setup, you can use the Docker image `cognimbus/kobuki_all_driveres:humble`. This image includes all necessary dependencies, allowing you to quickly get started with the Kobuki robot and associated devices.
+
+To see how this image was built, refer to the Dockerfile in the Docker section of this repository. This provides transparency and allows you to customize the build process if needed.
+
+By using this Docker image, you ensure a consistent environment across different systems, simplifying deployment and reducing setup time.

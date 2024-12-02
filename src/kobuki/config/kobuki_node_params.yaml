@@ -12,4 +12,3 @@ kobuki_ros_node:
     use_imu_heading: true
     wheel_left_joint_name: wheel_left_joint
     wheel_right_joint_name: wheel_right_joint
- 
