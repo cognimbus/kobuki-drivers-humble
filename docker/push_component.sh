@@ -16,4 +16,4 @@ docker buildx inspect --bootstrap
 #
 # on the terminal (inside the folder of the Dockerfile
 #
-docker buildx build --platform linux/amd64,linux/arm64 --tag cognimbus/kobuki_all_driveres:humble --push .
+docker buildx build --platform linux/amd64,linux/arm64 --tag cognimbus/kobuki_all_drivers:humble --push .

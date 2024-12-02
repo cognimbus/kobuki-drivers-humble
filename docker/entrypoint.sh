@@ -1,7 +1,7 @@
-#!/bin/sh
+#!/bin/bash
 # Source ROS Humble setup
 source /opt/ros/humble/setup.bash
 # Source the Kobuki workspace setup
 
-source ./kobuki-drivers-humble/install/setup.bash
+source ./install/setup.bash
 exec "$@"

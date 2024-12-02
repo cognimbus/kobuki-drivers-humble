@@ -1,6 +1,3 @@
-SyntaxError: JSON.parse: unexpected keyword at line 1 column 1 of the JSON data
-
-this is the my file : 
 {
     "name": "nimbus/ros2-realsense-d435",
     "type": "COMPONENT_TYPE_COMPONENT",
@@ -14,33 +11,66 @@ this is the my file :
       "state": "ENVIRONMENT_STATE_UNLOADED",
       "message": "",
       "progress": 0,
-      "requiredDevices": [],
+      "requiredDevices": [
+        {
+          "name": "camera",
+          "info": {
+            "type": "USB_PORT_TYPE_CAMERA",
+            "productId": "",
+            "vendorId": "8086",
+            "revision": "",
+            "serial": "",
+            "vendorName": "",
+            "productName": "",
+            "attributes": {},
+            "ports": [],
+            "portIndex": 0,
+            "simulation": false,
+            "ip": "",
+            "id": "",
+            "internalId": ""
+          },
+          "mountAs": "/dev/video*",
+          "optional": true
+        },
+        {
+          "name": "ttyUSB0",
+          "mountAs": "/dev/ttyUSB0",
+          "optional": true
+        },
+        {
+          "name": "ttyUSB1",
+          "mountAs": "/dev/ttyUSB1",
+          "optional": true
+        },
+        {
+          "name": "ttyACM0",
+          "mountAs": "/dev/ttyACM0",
+          "optional": true
+        },
+        {
+          "name": "kobuki",
+          "mountAs": "/dev/kobuki",
+          "optional": true
+        },
+        {
+          "name": "rplidar",
+          "mountAs": "/dev/rplidar",
+          "optional": true
+        }
+      ],
       "ports": [],
       "hostIpAddress": "",
       "variables": [],
       "dockerInfo": {
-        "image": "cognimbus/ros2-realsense-camera:humble",
+        "image": "cognimbus/kobuki_all_drivers:humble",
         "containerId": "",
         "imageSize": 0,
         "commands": [
           "ros2",
           "launch",
-          "realsense2_camera",
-          "rs_launch.py",
-          "camera_name:=${camera_name}",
-          "serial_no:=${serial_no}",
-          "unite_imu_method:=${unite_imu_method}",
-          "enable_depth:=${enable_depth}",
-          "enable_color:=${enable_color}",
-          "enable_infra1:=${enable_infra1}",
-          "enable_infra2:=${enable_infra2}",
-          "enable_fisheye1:=${enable_fisheye1}",
-          "enable_fisheye2:=${enable_fisheye2}",
-          "enable_gyro:=${enable_gyro}",
-          "enable_accel:=${enable_accel}",
-          "gyro_fps:=${gyro_fps}",
-          "accel_fps:=${accel_fps}",
-          "tf_publish_rate:=${tf_publish_rate}"
+          "robot_launchers",
+          "qualcomm_robot.launch.py"
         ],
         "privileged": true,
         "gpu": false,
@@ -50,108 +80,6 @@ this is the my file :
       "log": "",
       "convertedCommands": "",
       "onExit": "IGNORE"
-    },
-    "parameters": {
-      "parameters": [
-        {
-          "name": "camera_name",
-          "description": "Camera unique name",
-          "Category": "Static",
-          "node": "",
-          "stringValue": "camera"
-        },
-        {
-          "name": "serial_no",
-          "description": "It will attach to the device with the given serial number (serial_no) number",
-          "Category": "Static",
-          "node": "",
-          "stringValue": "''"
-        },
-        {
-          "name": "unite_imu_method",
-          "description": "[0-None, 1-copy, 2-linear_interpolation]",
-          "Category": "Static",
-          "node": "",
-          "integerValue": "0"
-        },
-        {
-          "name": "enable_depth",
-          "description": "Enable depth stream",
-          "Category": "Static",
-          "node": "",
-          "booleanValue": "true"
-        },
-        {
-          "name": "enable_color",
-          "description": "Enable color stream",
-          "Category": "Static",
-          "node": "",
-          "booleanValue": "true"
-        },
-        {
-          "name": "enable_infra1",
-          "description": "If set to true, enable stream for infra1",
-          "Category": "Static",
-          "node": "",
-          "booleanValue": "false"
-        },
-        {
-          "name": "enable_infra2",
-          "description": "If set to true, enable stream for infra2",
-          "Category": "Static",
-          "node": "",
-          "booleanValue": "false"
-        },
-        {
-          "name": "enable_fisheye1",
-          "description": "If set to true, enable stream for fisheye1",
-          "Category": "Static",
-          "node": "",
-          "booleanValue": "false"
-        },
-        {
-          "name": "enable_fisheye2",
-          "description": "If set to true, enable stream for fisheye2",
-          "Category": "Static",
-          "node": "",
-          "booleanValue": "false"
-        },
-        {
-          "name": "enable_gyro",
-          "description": "If set to true, enable stream for gyro",
-          "Category": "Static",
-          "node": "",
-          "booleanValue": "false"
-        },
-        {
-          "name": "enable_accel",
-          "description": "If set to true, enable stream for accel",
-          "Category": "Static",
-          "node": "",
-          "booleanValue": "false"
-        },
-        {
-          "name": "gyro_fps",
-          "description": "Specify the required FPS for the gyro stream",
-          "Category": "Static",
-          "node": "",
-          "integerValue": "0"
-        },
-        {
-          "name": "accel_fps",
-          "description": "Specify the required FPS for the accel stream",
-          "Category": "Static",
-          "node": "",
-          "integerValue": "0"
-        },
-        {
-          "name": "tf_publish_rate",
-          "description": "Rate of publishing static_tf",
-          "Category": "Static",
-          "node": "",
-          "integerValue": "10"
-        }
-      ]
     },
     "state": "COMPONENT_STATE_UNLOADED",
     "message": "",
@@ -297,32 +225,23 @@ this is the my file :
           "latched": false,
           "maxRate": 0,
           "expectedRate": 0
+        },
+        {
+          "name": "lidar_scan",
+          "type": "",
+          "description": "LiDAR scan data.",
+          "streamMode": "STREAM_MODE_TOPIC",
+          "rosTopic": {
+            "topic": "/scan",
+            "type": "Messages.sensor_msgs.LaserScan",
+            "qosProfile": ""
+          },
+          "latched": false,
+          "maxRate": 0,
+          "expectedRate": 0
         }
       ]
     },
-    "requiredDevices": [
-      {
-        "name": "camera",
-        "info": {
-          "type": "USB_PORT_TYPE_CAMERA",
-          "productId": "",
-          "vendorId": "8086",
-          "revision": "",
-          "serial": "",
-          "vendorName": "",
-          "productName": "",
-          "attributes": {},
-          "ports": [],
-          "portIndex": 0,
-          "simulation": false,
-          "ip": "",
-          "id": "",
-          "internalId": ""
-        },
-        "mountAs": "/dev/videoX",
-        "optional": true
-      }
-    ],
     "ros": {
       "baseFrame": "base_link",
       "rate": 10,
@@ -336,25 +255,6 @@ this is the my file :
     "simulation": false,
     "pluginFile": "",
     "license": "Apache 2.0",
-    "id": "",
-    "launchCommands": {
-      "robotLaunchCommands": [
-        "ros2 launch robot_launchers amr8_robot.launch.py",
-        "ros2 launch robot_launchers qualcomm_robot.launch.py"
-      ],
-      "udevRules": [
-        "sudo cp /kobuki_ws/src/ThirdParty/ros_astra_camera/astra_camera/scripts/56-orbbec-usb.rules /etc/udev/rules.d/",
-        "sudo cp /kobuki_ws/src/ThirdParty/rplidar_ros/scripts/rplidar.rules /etc/udev/rules.d/",
-        "sudo cp /kobuki_ws/src/ThirdParty/kobuki_ros/60-kobuki.rules /etc/udev/rules.d/"
-      ],
-      "permissions": [
-        "chmod 777 /dev/ttyUSB0",
-        "chmod 777 /dev/video0",
-        "sudo chmod 777 /dev/ttyACM0"
-      ],
-      "kobukiConfig": "Update the configuration file at `src/kobuki/config/kobuki_node_params.yaml` with the specified parameters.",
-      "hokuyoConfig": "Ensure the launch file uses local configuration instead of the internet for `sllidar_ros2`."
-    }
+    "id": ""
   }
 
-i need to update this json 

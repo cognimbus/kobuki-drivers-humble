@@ -59,12 +59,10 @@ RUN . /opt/ros/humble/setup.sh && \
 
 
 RUN echo "source /opt/ros/humble/setup.bash" >> ~/.bashrc && \
-    echo "source /kobuki-drivers-humble/src/install/setup.bash" >> ~/.bashrc
+    echo "source /kobuki-drivers-humble/install/setup.bash" >> ~/.bashrc 
 
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 
 ENTRYPOINT ["/entrypoint.sh"]
-
-
 
