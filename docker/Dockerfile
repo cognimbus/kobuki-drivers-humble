@@ -55,22 +55,32 @@ RUN . /opt/ros/humble/setup.sh && \
     aws_robomaker_small_house_world aws_robomaker_small_warehouse_world \
     --packages-skip-up-to urg_node2 astra_camera astra_camera_msgs
 
+FROM cognimbus/kobuki_all_drivers:humble as base
+
+# Start new stage for tf_poses_stage
+FROM base as tf_poses_stage
+
 # Copy tf_to_poses from local machine to container
 WORKDIR /kobuki-drivers-humble/src
-WORKDIR /kobuki-drivers-humble/src
-WORKDIR /kobuki-drivers-humble/src
-WORKDIR /kobuki-drivers-humble/src
 
-# Clone repository and extract tf_to_poses
-RUN git clone https://github.com/cognimbus/kobuki-drivers-humble.git temp_repo && \
+# Clone repository and extract tf_to_poses with cleanup
+RUN rm -rf tf_to_poses temp_repo && \
+    git clone https://github.com/cognimbus/kobuki-drivers-humble.git temp_repo && \
     mv temp_repo/src/tf_to_poses . && \
     rm -rf temp_repo
+
+# Clone again for robot_launchers update with cleanup
+RUN rm -rf temp_repo2 && \
+    git clone https://github.com/cognimbus/kobuki-drivers-humble.git temp_repo2 && \
+    rm -rf /kobuki-drivers-humble/src/robot_launchers/launch && \
+    mv temp_repo2/src/robot_launchers/launch /kobuki-drivers-humble/src/robot_launchers/ && \
+    rm -rf temp_repo2
 
 # Build only tf_to_poses package
 WORKDIR /kobuki-drivers-humble
 RUN . /opt/ros/humble/setup.sh && \
     . ./install/setup.sh && \
-    colcon build --symlink-install --packages-select tf_to_poses
+    colcon build --symlink-install --packages-select tf_to_poses robot_launchers
 
 RUN echo "source /opt/ros/humble/setup.bash" >> ~/.bashrc && \
     echo "source /kobuki-drivers-humble/install/setup.bash" >> ~/.bashrc 

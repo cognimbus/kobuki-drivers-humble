@@ -54,7 +54,7 @@ def generate_launch_description():
         launch_arguments={
             'base_frame': 'base_link',
             'camera_frame': 'camera_link',
-            'laser_frame': 'lidar_link',  # Note: changed from 'laser' to match your robot
+            'laser_frame': 'laser', 
             'global_frame': 'map',
             'rate': '10.0'
         }.items()
