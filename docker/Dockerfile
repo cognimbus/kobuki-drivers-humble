@@ -57,6 +57,16 @@ RUN . /opt/ros/humble/setup.sh && \
     aws_robomaker_small_house_world aws_robomaker_small_warehouse_world \
     --packages-skip-up-to urg_node2 astra_camera astra_camera_msgs
 
+WORKDIR /kobuki-drivers-humble
+WORKDIR /kobuki-drivers-humble/src
+RUN git clone https://github.com/cognimbus/kobuki-drivers-humble.git temp_repo && \
+    mv temp_repo/src/tf_to_poses . && \
+    rm -rf temp_repo
+
+WORKDIR /kobuki-drivers-humble
+RUN . /opt/ros/humble/setup.sh && \
+    . ./install/setup.sh && \
+    colcon build --symlink-install --packages-select tf_to_poses
 
 RUN echo "source /opt/ros/humble/setup.bash" >> ~/.bashrc && \
     echo "source /kobuki-drivers-humble/install/setup.bash" >> ~/.bashrc 
