@@ -1,260 +1,115 @@
 {
-    "name": "nimbus/ros2-realsense-d435",
-    "type": "COMPONENT_TYPE_COMPONENT",
-    "className": "Ros2Component",
-    "instanceName": "",
-    "description": "Intel Realsense D435 ROS2 driver\nLicense: Apache 2.0",
-    "start": "START_MODE_AUTO",
-    "environment": {
-      "name": "",
-      "ipAddress": "",
-      "state": "ENVIRONMENT_STATE_UNLOADED",
-      "message": "",
-      "progress": 0,
-      "requiredDevices": [
-        {
-          "name": "camera",
-          "info": {
-            "type": "USB_PORT_TYPE_CAMERA",
-            "productId": "",
-            "vendorId": "8086",
-            "revision": "",
-            "serial": "",
-            "vendorName": "",
-            "productName": "",
-            "attributes": {},
-            "ports": [],
-            "portIndex": 0,
-            "simulation": false,
-            "ip": "",
-            "id": "",
-            "internalId": ""
-          },
-          "mountAs": "/dev/video*",
-          "optional": true
-        },
-        {
-          "name": "ttyUSB0",
-          "mountAs": "/dev/ttyUSB0",
-          "optional": true
-        },
-        {
-          "name": "ttyUSB1",
-          "mountAs": "/dev/ttyUSB1",
-          "optional": true
-        },
-        {
-          "name": "ttyACM0",
-          "mountAs": "/dev/ttyACM0",
-          "optional": true
-        },
-        {
-          "name": "kobuki",
-          "mountAs": "/dev/kobuki",
-          "optional": true
-        },
-        {
-          "name": "rplidar",
-          "mountAs": "/dev/rplidar",
-          "optional": true
-        }
-      ],
-      "ports": [],
-      "hostIpAddress": "",
-      "variables": [],
-      "dockerInfo": {
-        "image": "cognimbus/kobuki_all_drivers:humble",
-        "containerId": "",
-        "imageSize": 0,
-        "commands": [
-          "ros2",
-          "launch",
-          "robot_launchers",
-          "qualcomm_robot.launch.py"
-        ],
-        "privileged": true,
-        "gpu": false,
-        "networkHost": false,
-        "binds": []
-      },
-      "log": "",
-      "convertedCommands": "",
-      "onExit": "IGNORE"
-    },
-    "state": "COMPONENT_STATE_UNLOADED",
+  "name": "Cogniteam/ori_cogniteam_testing_component_update",
+  "type": "COMPONENT_TYPE_COMPONENT",
+  "className": "Ros2Component",
+  "instanceName": "",
+  "description": "first time working with components cogniteam platform",
+  "version": {
+    "major": 1,
+    "minor": 0,
+    "patch": 9,
+    "build": ""
+  },
+  "start": "START_MODE_AUTO",
+  "environment": {
+    "name": "",
+    "ipAddress": "",
+    "state": "ENVIRONMENT_STATE_UNLOADED",
     "message": "",
-    "streams": {
-      "inputStreams": [],
-      "outputStreams": [
-        {
-          "name": "color_image_raw",
-          "type": "",
-          "description": "Color rectified image. RGB format.",
-          "streamMode": "STREAM_MODE_TOPIC",
-          "rosTopic": {
-            "topic": "/camera/camera/color/image_raw/compressed",
-            "type": "Messages.sensor_msgs.Image",
-            "qosProfile": ""
-          },
-          "latched": false,
-          "maxRate": 0,
-          "expectedRate": 0
-        },
-        {
-          "name": "color_camera_info",
-          "type": "",
-          "description": "Color camera calibration and metadata.",
-          "streamMode": "STREAM_MODE_TOPIC",
-          "rosTopic": {
-            "topic": "/camera/color/camera_info",
-            "type": "Messages.sensor_msgs.CameraInfo",
-            "qosProfile": ""
-          },
-          "latched": false,
-          "maxRate": 0,
-          "expectedRate": 0
-        },
-        {
-          "name": "infra_image_left",
-          "type": "",
-          "description": "Raw uint16 Infra Red image.",
-          "streamMode": "STREAM_MODE_TOPIC",
-          "rosTopic": {
-            "topic": "/camera/infra1/image_rect_raw",
-            "type": "Messages.sensor_msgs.Image",
-            "qosProfile": ""
-          },
-          "latched": false,
-          "maxRate": 0,
-          "expectedRate": 0
-        },
-        {
-          "name": "infra_image_right",
-          "type": "",
-          "description": "Raw uint16 Infra Red image.",
-          "streamMode": "STREAM_MODE_TOPIC",
-          "rosTopic": {
-            "topic": "/camera/infra2/image_rect_raw",
-            "type": "Messages.sensor_msgs.Image",
-            "qosProfile": ""
-          },
-          "latched": false,
-          "maxRate": 0,
-          "expectedRate": 0
-        },
-        {
-          "name": "infra_camera_info_left",
-          "type": "",
-          "description": "Left infra camera calibration and metadata.",
-          "streamMode": "STREAM_MODE_TOPIC",
-          "rosTopic": {
-            "topic": "/camera/infra1/camera_info",
-            "type": "Messages.sensor_msgs.CameraInfo",
-            "qosProfile": ""
-          },
-          "latched": false,
-          "maxRate": 0,
-          "expectedRate": 0
-        },
-        {
-          "name": "infra_camera_info_right",
-          "type": "",
-          "description": "Right infra camera calibration and metadata.",
-          "streamMode": "STREAM_MODE_TOPIC",
-          "rosTopic": {
-            "topic": "/camera/infra2/camera_info",
-            "type": "Messages.sensor_msgs.CameraInfo",
-            "qosProfile": ""
-          },
-          "latched": false,
-          "maxRate": 0,
-          "expectedRate": 0
-        },
-        {
-          "name": "depth_camera_info",
-          "type": "",
-          "description": "Depth camera calibration and metadata.",
-          "streamMode": "STREAM_MODE_TOPIC",
-          "rosTopic": {
-            "topic": "/camera/depth/camera_info/",
-            "type": "Messages.sensor_msgs.CameraInfo",
-            "qosProfile": ""
-          },
-          "latched": false,
-          "maxRate": 0,
-          "expectedRate": 0
-        },
-        {
-          "name": "depth_image_rect_raw",
-          "type": "",
-          "description": "Raw depth image from device. Contains uint16 depths in mm.",
-          "streamMode": "STREAM_MODE_TOPIC",
-          "rosTopic": {
-            "topic": "/camera/depth/image_rect_raw",
-            "type": "Messages.sensor_msgs.Image",
-            "qosProfile": ""
-          },
-          "latched": false,
-          "maxRate": 0,
-          "expectedRate": 0
-        },
-        {
-          "name": "gyro",
-          "type": "",
-          "description": "gyro stream (which shows angular velocity).",
-          "streamMode": "STREAM_MODE_TOPIC",
-          "rosTopic": {
-            "topic": "/camera/gyro/sample",
-            "type": "Messages.sensor_msgs.Imu",
-            "qosProfile": ""
-          },
-          "latched": false,
-          "maxRate": 0,
-          "expectedRate": 0
-        },
-        {
-          "name": "accel",
-          "type": "",
-          "description": "accel stream (which shows linear acceleration).",
-          "streamMode": "STREAM_MODE_TOPIC",
-          "rosTopic": {
-            "topic": "/camera/accel/sample",
-            "type": "Messages.sensor_msgs.Imu",
-            "qosProfile": ""
-          },
-          "latched": false,
-          "maxRate": 0,
-          "expectedRate": 0
-        },
-        {
-          "name": "lidar_scan",
-          "type": "",
-          "description": "LiDAR scan data.",
-          "streamMode": "STREAM_MODE_TOPIC",
-          "rosTopic": {
-            "topic": "/scan",
-            "type": "Messages.sensor_msgs.LaserScan",
-            "qosProfile": ""
-          },
-          "latched": false,
-          "maxRate": 0,
-          "expectedRate": 0
-        }
-      ]
+    "progress": 0,
+    "requiredDevices": [
+      {
+        "name": "camera",
+        "mountAs": "/dev/video*",
+        "optional": true
+      },
+      {
+        "name": "ttyUSB0",
+        "mountAs": "/dev/ttyUSB0",
+        "optional": true
+      },
+      {
+        "name": "ttyUSB1",
+        "mountAs": "/dev/ttyUSB1",
+        "optional": true
+      },
+      {
+        "name": "ttyACM0",
+        "mountAs": "/dev/ttyACM0",
+        "optional": true
+      },
+      {
+        "name": "kobuki",
+        "mountAs": "/dev/kobuki",
+        "optional": true
+      },
+      {
+        "name": "rplidar",
+        "mountAs": "/dev/rplidar",
+        "optional": true
+      }
+    ],
+    "ports": [],
+    "hostIpAddress": "",
+    "variables": [],
+    "dockerInfo": {
+      "image": "cognimbus/kobuki_all_drivers:humble",
+      "containerId": "",
+      "imageSize": 0,
+      "commands": [
+        "bash",
+        "-c",
+        "source /opt/ros/humble/setup.bash && ros2 topic pub /hello_topic std_msgs/String \"{data: 'Hello, ROS2 World'}\""
+      ],
+      "privileged": true,
+      "gpu": false,
+      "networkHost": true,
+      "binds": [],
+      "user": "",
+      "runtime": "",
+      "portBindings": {},
+      "mounts": []
     },
-    "ros": {
-      "baseFrame": "base_link",
-      "rate": 10,
-      "publishTfDevices": true,
-      "rosMasterUri": "",
-      "rosIp": "",
-      "autoDetectIp": false
-    },
-    "tags": {},
-    "category": "Drivers/RGBD Cameras",
-    "simulation": false,
-    "pluginFile": "",
-    "license": "Apache 2.0",
-    "id": ""
-  }
-
+    "log": "",
+    "convertedCommands": "",
+    "onExit": "KILL_ON_EXIT"
+  },
+  "state": "COMPONENT_STATE_UNLOADED",
+  "message": "",
+  "streams": {
+    "inputStreams": [
+      {
+        "name": "laser_scan",
+        "type": "",
+        "description": "Listens to 2D laser scan data from a2m8 lidar",
+        "streamMode": "STREAM_MODE_TOPIC",
+        "rosTopic": {
+          "topic": "/scan",
+          "type": "Messages.sensor_msgs.LaserScan",
+          "qosProfile": ""
+        },
+        "latched": false,
+        "maxRate": 0,
+        "expectedRate": 0
+      }
+    ],
+    "outputStreams": []
+  },
+  "requiredDevices": [],
+  "ros": {
+    "baseFrame": "base_link",
+    "rate": 10,
+    "publishTfDevices": true,
+    "rosMasterUri": "",
+    "rosIp": "",
+    "autoDetectIp": false,
+    "ros2DomainId": 0
+  },
+  "tags": {},
+  "category": "Drivers/Robots",
+  "simulation": false,
+  "pluginFile": "",
+  "license": "None",
+  "id": "690314ef-b336-46cc-806b-e4330432b2ad",
+  "uuid": "aa11fe20-f73e-4715-885a-6a86989b401c"
+}
