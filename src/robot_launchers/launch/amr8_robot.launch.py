@@ -56,7 +56,14 @@ def generate_launch_description():
     tf_to_poses_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
             os.path.join(tf_to_poses_dir, 'launch', 'bringup_launch.py')
-        )
+        ),
+        launch_arguments={
+            'base_frame': 'base_link',
+            'camera_frame': 'camera_link',
+            'laser_frame': 'laser',
+            'global_frame': 'map',
+            'rate': '10.0'
+        }.items()
     )
 
     # Add transformations

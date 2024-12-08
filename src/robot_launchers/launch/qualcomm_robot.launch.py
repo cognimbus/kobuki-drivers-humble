@@ -46,11 +46,18 @@ def generate_launch_description():
         )
     )
 
-    # Add tf_to_poses launch
+    # Add tf_to_poses launch with parameters
     tf_to_poses_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
             os.path.join(tf_to_poses_dir, 'launch', 'bringup_launch.py')
-        )
+        ),
+        launch_arguments={
+            'base_frame': 'base_link',
+            'camera_frame': 'camera_link',
+            'laser_frame': 'lidar_link',  # Note: changed from 'laser' to match your robot
+            'global_frame': 'map',
+            'rate': '10.0'
+        }.items()
     )
 
     # Add transformations

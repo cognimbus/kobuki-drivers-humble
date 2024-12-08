@@ -28,8 +28,6 @@ RUN git clone https://github.com/cognimbus/kobuki-drivers-humble.git
 WORKDIR /kobuki-drivers-humble/src
 RUN vcs import < kobuki/thirdparty.repos
 
-
-
 WORKDIR /kobuki-drivers-humble
 RUN sh /opt/ros/humble/setup.sh && \
     rosdep update && \
@@ -57,12 +55,18 @@ RUN . /opt/ros/humble/setup.sh && \
     aws_robomaker_small_house_world aws_robomaker_small_warehouse_world \
     --packages-skip-up-to urg_node2 astra_camera astra_camera_msgs
 
+# Copy tf_to_poses from local machine to container
 WORKDIR /kobuki-drivers-humble/src
 WORKDIR /kobuki-drivers-humble/src
+WORKDIR /kobuki-drivers-humble/src
+WORKDIR /kobuki-drivers-humble/src
+
+# Clone repository and extract tf_to_poses
 RUN git clone https://github.com/cognimbus/kobuki-drivers-humble.git temp_repo && \
     mv temp_repo/src/tf_to_poses . && \
     rm -rf temp_repo
 
+# Build only tf_to_poses package
 WORKDIR /kobuki-drivers-humble
 RUN . /opt/ros/humble/setup.sh && \
     . ./install/setup.sh && \
@@ -75,3 +79,4 @@ COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 
 ENTRYPOINT ["/entrypoint.sh"]
+
