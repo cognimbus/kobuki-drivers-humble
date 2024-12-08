@@ -12,6 +12,7 @@ def generate_launch_description():
     urg_dir = get_package_share_directory('urg_node2')
     slam_toolbox_dir = get_package_share_directory('slam_toolbox')
     nav2_bringup_dir = get_package_share_directory('nav2_bringup')
+    tf_to_poses_dir = get_package_share_directory('tf_to_poses')
 
     # Create launch description objects
     realsense_launch = IncludeLaunchDescription(
@@ -45,7 +46,14 @@ def generate_launch_description():
         )
     )
 
-    # Add new transformations
+    # Add tf_to_poses launch
+    tf_to_poses_launch = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(
+            os.path.join(tf_to_poses_dir, 'launch', 'bringup_launch.py')
+        )
+    )
+
+    # Add transformations
     tf_footprint2base_cmd = Node(
         package='tf2_ros',
         executable='static_transform_publisher',
@@ -79,6 +87,7 @@ def generate_launch_description():
         urg_launch,
         slam_toolbox_launch,
         nav2_launch,
+        tf_to_poses_launch,
         tf_footprint2base_cmd,
         fake_bumper_cmd,
         from_base_to_lidar_cmd,
