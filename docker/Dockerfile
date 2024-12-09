@@ -60,6 +60,7 @@ FROM cognimbus/kobuki_all_drivers:humble as base
 # Start new stage for tf_poses_stage
 FROM base as tf_poses_stage
 WORKDIR /kobuki-drivers-humble/src
+WORKDIR /kobuki-drivers-humble/src
 
 # Copy tf_to_poses from local machine to container
 WORKDIR /kobuki-drivers-humble/src
@@ -79,9 +80,12 @@ RUN rm -rf temp_repo2 && \
 
 # Build only tf_to_poses package
 WORKDIR /kobuki-drivers-humble
-RUN . /opt/ros/humble/setup.sh && \
-    . ./install/setup.sh && \
-    colcon build --symlink-install --packages-select tf_to_poses robot_launchers
+
+# Clean and rebuild tf_to_poses
+RUN rm -rf build/tf_to_poses install/tf_to_poses log/latest_build && \
+    . /opt/ros/humble/setup.sh && \
+    colcon build --symlink-install --packages-select tf_to_poses robot_launchers && \
+    . ./install/setup.sh
 
 RUN echo "source /opt/ros/humble/setup.bash" >> ~/.bashrc && \
     echo "source /kobuki-drivers-humble/install/setup.bash" >> ~/.bashrc 
