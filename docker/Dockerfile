@@ -59,6 +59,7 @@ FROM cognimbus/kobuki_all_drivers:humble as base
 
 # Start new stage for tf_poses_stage
 FROM base as tf_poses_stage
+WORKDIR /kobuki-drivers-humble/src
 
 # Copy tf_to_poses from local machine to container
 WORKDIR /kobuki-drivers-humble/src

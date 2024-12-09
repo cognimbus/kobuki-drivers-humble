@@ -46,7 +46,7 @@ def generate_launch_description():
         )
     )
 
-    # Add tf_to_poses launch with parameters
+    # Replace the tf_to_poses_node with this launch inclusion
     tf_to_poses_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
             os.path.join(tf_to_poses_dir, 'launch', 'bringup_launch.py')
@@ -56,7 +56,7 @@ def generate_launch_description():
             'camera_frame': 'camera_link',
             'laser_frame': 'laser', 
             'global_frame': 'map',
-            'rate': '10.0'
+            'rate': '10.0'  
         }.items()
     )
 
@@ -78,7 +78,7 @@ def generate_launch_description():
         package='tf2_ros',
         executable='static_transform_publisher',
         output='screen',
-        arguments=['0.0', '0.0', '0.4', '0.0', '0.0', '0.0', 'base_link', 'lidar_link']
+        arguments=['0.0', '0.0', '0.4', '0.0', '0.0', '0.0', 'base_link', 'laser']
     )
 
     from_base_to_camera_cmd = Node(
@@ -94,7 +94,7 @@ def generate_launch_description():
         urg_launch,
         slam_toolbox_launch,
         nav2_launch,
-        tf_to_poses_launch,
+        tf_to_poses_launch,  # Changed this line
         tf_footprint2base_cmd,
         fake_bumper_cmd,
         from_base_to_lidar_cmd,
