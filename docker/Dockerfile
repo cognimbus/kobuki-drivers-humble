@@ -56,10 +56,12 @@ RUN . /opt/ros/humble/setup.sh && \
     --packages-skip-up-to urg_node2 astra_camera astra_camera_msgs
 
 WORKDIR /kobuki-drivers-humble/src
+WORKDIR /kobuki-drivers-humble/src/robot_launchers
 
 RUN apt-get update && apt-get install -y  \
     ros-humble-topic-tools \
     nano
+WORKDIR /kobuki-drivers-humble/src/robot_launchers
 
 WORKDIR /kobuki-drivers-humble/src/robot_launchers
 WORKDIR /kobuki-drivers-humble/src/robot_launchers
