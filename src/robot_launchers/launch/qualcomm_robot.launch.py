@@ -45,10 +45,13 @@ def generate_launch_description():
             os.path.join(slam_toolbox_dir, 'launch', 'online_async_launch.py')
         ),
         launch_arguments={
-            'max_laser_range': '20.0',
-            'minimum_time_interval': '0.5',
-            'transform_timeout': '0.2',
-            'update_rate': '5.0'
+            'max_laser_range': '10.0',  # Increased range for better mapping
+            'transform_timeout': '0.1',  # Reduced timeout for faster processing
+            'update_rate': '10.0',  
+            'enable_interactive_mode': 'false',  # Disable interactive mode for better performance
+            'use_pose_extrapolator': 'true',  # Enable pose extrapolation for smoother mapping
+            'scan_topic': 'scan',  # Explicitly set scan topic
+            'stack_size_to_use': '40000000'  # Increased stack size for better performance
         }.items()
     )
 
@@ -75,7 +78,7 @@ def generate_launch_description():
             'camera_frame': 'camera_link',
             'laser_frame': 'laser', 
             'global_frame': 'map',
-            'rate': '5.0'
+            'rate': '10.0'
         }.items()
     )
 
