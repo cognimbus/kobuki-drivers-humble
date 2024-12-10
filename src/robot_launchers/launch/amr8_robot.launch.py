@@ -19,9 +19,17 @@ def generate_launch_description():
 
     # Create launch description objects
     realsense_launch = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(
-            os.path.join(realsense_dir, 'launch', 'rs_launch.py')
-        )
+    PythonLaunchDescriptionSource(
+        os.path.join(realsense_dir, 'launch', 'rs_launch.py')
+    ),
+        launch_arguments={
+            'depth_width': '640',
+            'depth_height': '480',
+            'color_width': '640',
+            'color_height': '480',
+            'depth_fps': '24',
+            'color_fps': '24'
+        }.it
     )
 
     sllidar_launch = IncludeLaunchDescription(
@@ -63,7 +71,7 @@ def generate_launch_description():
             'camera_frame': 'camera_link',
             'laser_frame': 'laser',
             'global_frame': 'map',
-            'rate': '10.0'
+            'rate': '5.0'
         }.items()
     )
 

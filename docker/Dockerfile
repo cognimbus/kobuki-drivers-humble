@@ -55,19 +55,22 @@ RUN . /opt/ros/humble/setup.sh && \
     aws_robomaker_small_house_world aws_robomaker_small_warehouse_world \
     --packages-skip-up-to urg_node2 astra_camera astra_camera_msgs
 
-FROM cognimbus/kobuki_all_drivers:humble as base
+WORKDIR /kobuki-drivers-humble/src
 
-# Start new stage for tf_poses_stage
-FROM base as tf_poses_stage
+RUN apt-get update && apt-get install -y  \
+    ros-humble-topic-tools \
+    nano
+
 WORKDIR /kobuki-drivers-humble/src/robot_launchers
-WORKDIR /kobuki-drivers-humble/src
-WORKDIR /kobuki-drivers-humble/src
-WORKDIR /kobuki-drivers-humble/src
-WORKDIR /kobuki-drivers-humble/src
+WORKDIR /kobuki-drivers-humble/src/robot_launchers
+# Start new stage for tf_poses_stage
+WORKDIR /kobuki-drivers-humble/src/robot_launchers
+WORKDIR /kobuki-drivers-humble/src/robot_launchers
+
 
 # Copy tf_to_poses from local machine to container
 WORKDIR /kobuki-drivers-humble/src
-
+WORKDIR /kobuki-drivers-humble/src
 # Clone repository and extract tf_to_poses with cleanup
 RUN rm -rf tf_to_poses temp_repo && \
     git clone https://github.com/cognimbus/kobuki-drivers-humble.git temp_repo && \

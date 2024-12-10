@@ -24,7 +24,13 @@ def generate_launch_description():
     realsense_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
             os.path.join(realsense_dir, 'launch', 'rs_launch.py')
-        )
+        ),
+        launch_arguments={
+            'depth_width': '640',
+            'depth_height': '480',
+            'color_width': '640',
+            'color_height': '480'
+        }.items()
     )
 
     kobuki_launch = IncludeLaunchDescription(
@@ -36,7 +42,14 @@ def generate_launch_description():
     slam_toolbox_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
             os.path.join(slam_toolbox_dir, 'launch', 'online_async_launch.py')
-        )
+        ),
+        launch_arguments={
+            'resolution': '0.05',
+            'max_laser_range': '20.0',
+            'minimum_time_interval': '0.5',
+            'transform_timeout': '0.2',
+            'update_rate': '5.0'
+        }.items()
     )
 
     nav2_launch = IncludeLaunchDescription(
@@ -86,6 +99,21 @@ def generate_launch_description():
         arguments=['0.15', '0.0', '0.17', '0.0', '0.0', '0.0', 'base_link', 'camera_link']
     )
 
+    cmd_vel_mux = Node(
+        package='topic_tools',
+        executable='mux',
+        name='cmd_vel_mux',
+        parameters=[{
+            'input_topics': ['/cmd_vel_nav', '/cmd_vel'],
+            'output_topic': '/cmd_vel_robot',
+            'default_topic': '/cmd_vel_nav'
+        }],
+        remappings=[
+            ('/nav2/cmd_vel', '/cmd_vel_nav'),
+            ('/cmd_vel_robot', '/cmd_vel')
+        ]
+    )
+
     return LaunchDescription([
         # Launch URG first
         urg_launch,
@@ -102,5 +130,6 @@ def generate_launch_description():
             tf_to_poses_launch,
             slam_toolbox_launch,
             nav2_launch,
+            cmd_vel_mux,
         ]),
     ])
