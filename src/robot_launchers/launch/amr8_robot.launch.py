@@ -1,34 +1,31 @@
 from launch import LaunchDescription
-from launch.actions import IncludeLaunchDescription
+from launch.actions import IncludeLaunchDescription, TimerAction
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration
 from launch.actions import DeclareLaunchArgument
+from launch_ros.actions import Node
 from ament_index_python.packages import get_package_share_directory
 import os
-from launch_ros.actions import Node
-from launch.actions import TimerAction
 
 def generate_launch_description():
     # Get package directories
     realsense_dir = get_package_share_directory('realsense2_camera')
-    sllidar_dir = get_package_share_directory('sllidar_ros2')
     kobuki_dir = get_package_share_directory('kobuki')
+    sllidar_dir = get_package_share_directory('sllidar_ros2')
     slam_toolbox_dir = get_package_share_directory('slam_toolbox')
     nav2_bringup_dir = get_package_share_directory('nav2_bringup')
     tf_to_poses_dir = get_package_share_directory('tf_to_poses')
 
     # Create launch description objects
     realsense_launch = IncludeLaunchDescription(
-    PythonLaunchDescriptionSource(
-        os.path.join(realsense_dir, 'launch', 'rs_launch.py')
-    ),
+        PythonLaunchDescriptionSource(
+            os.path.join(realsense_dir, 'launch', 'rs_launch.py')
+        ),
         launch_arguments={
             'depth_width': '640',
             'depth_height': '480',
             'color_width': '640',
-            'color_height': '480',
-            'depth_fps': '24',
-            'color_fps': '24'
+            'color_height': '480'
         }.it
     )
 
@@ -48,20 +45,32 @@ def generate_launch_description():
         )
     )
 
-    # Include SLAM Toolbox and Navigation
     slam_toolbox_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
             os.path.join(slam_toolbox_dir, 'launch', 'online_async_launch.py')
-        )
+        ),
+        launch_arguments={
+            'max_laser_range': '20.0',
+            'minimum_time_interval': '0.5',
+            'transform_timeout': '0.2',
+            'update_rate': '5.0'
+        }.items()
     )
 
     nav2_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
             os.path.join(nav2_bringup_dir, 'launch', 'navigation_launch.py')
-        )
+        ),
+        launch_arguments={
+            'use_sim_time': 'false',
+            'controller_frequency': '10.0',
+            'planner_server_rate': '5.0',
+            'controller_server_rate': '10.0',
+            'global_costmap_publish_rate': '2.0',
+            'local_costmap_publish_rate': '5.0'
+        }.items()
     )
 
-    # Add tf_to_poses launch
     tf_to_poses_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
             os.path.join(tf_to_poses_dir, 'launch', 'bringup_launch.py')
@@ -69,13 +78,13 @@ def generate_launch_description():
         launch_arguments={
             'base_frame': 'base_link',
             'camera_frame': 'camera_link',
-            'laser_frame': 'laser',
+            'laser_frame': 'laser', 
             'global_frame': 'map',
             'rate': '5.0'
         }.items()
     )
 
-    # Add transformations
+    # Common transformations and nodes (same as Qualcomm)
     tf_footprint2base_cmd = Node(
         package='tf2_ros',
         executable='static_transform_publisher',
@@ -103,6 +112,21 @@ def generate_launch_description():
         arguments=['0.15', '0.0', '0.17', '0.0', '0.0', '0.0', 'base_link', 'camera_link']
     )
 
+    cmd_vel_mux = Node(
+        package='topic_tools',
+        executable='mux',
+        name='cmd_vel_mux',
+        parameters=[{
+            'input_topics': ['/cmd_vel_nav', '/cmd_vel'],
+            'output_topic': '/cmd_vel_robot',
+            'default_topic': '/cmd_vel_nav'
+        }],
+        remappings=[
+            ('/nav2/cmd_vel', '/cmd_vel_nav'),
+            ('/cmd_vel_robot', '/cmd_vel')
+        ]
+    )
+
     return LaunchDescription([
         # Launch RPLIDAR first
         sllidar_launch,
@@ -119,5 +143,6 @@ def generate_launch_description():
             tf_to_poses_launch,
             slam_toolbox_launch,
             nav2_launch,
+            cmd_vel_mux,
         ]),
     ]) 

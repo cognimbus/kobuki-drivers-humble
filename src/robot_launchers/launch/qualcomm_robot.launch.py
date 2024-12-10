@@ -14,13 +14,14 @@ def generate_launch_description():
     nav2_bringup_dir = get_package_share_directory('nav2_bringup')
     tf_to_poses_dir = get_package_share_directory('tf_to_poses')
 
-    # Create launch description objects (same as your code)
+    # URG Lidar (Qualcomm specific)
     urg_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
             os.path.join(urg_dir, 'launch', 'urg_node2.launch.py')
         )
     )
 
+    # Common configurations for both robots
     realsense_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
             os.path.join(realsense_dir, 'launch', 'rs_launch.py')
@@ -44,7 +45,6 @@ def generate_launch_description():
             os.path.join(slam_toolbox_dir, 'launch', 'online_async_launch.py')
         ),
         launch_arguments={
-            'resolution': '0.05',
             'max_laser_range': '20.0',
             'minimum_time_interval': '0.5',
             'transform_timeout': '0.2',
@@ -55,7 +55,15 @@ def generate_launch_description():
     nav2_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
             os.path.join(nav2_bringup_dir, 'launch', 'navigation_launch.py')
-        )
+        ),
+        launch_arguments={
+            'use_sim_time': 'false',
+            'controller_frequency': '10.0',
+            'planner_server_rate': '5.0',
+            'controller_server_rate': '10.0',
+            'global_costmap_publish_rate': '2.0',
+            'local_costmap_publish_rate': '5.0'
+        }.items()
     )
 
     tf_to_poses_launch = IncludeLaunchDescription(
@@ -67,11 +75,11 @@ def generate_launch_description():
             'camera_frame': 'camera_link',
             'laser_frame': 'laser', 
             'global_frame': 'map',
-            'rate': '10.0'  
+            'rate': '5.0'
         }.items()
     )
 
-    # Add transformations
+    # Common transformations and nodes
     tf_footprint2base_cmd = Node(
         package='tf2_ros',
         executable='static_transform_publisher',
