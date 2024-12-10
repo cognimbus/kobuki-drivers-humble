@@ -6,6 +6,7 @@ from launch.actions import DeclareLaunchArgument
 from ament_index_python.packages import get_package_share_directory
 import os
 from launch_ros.actions import Node
+from launch.actions import TimerAction
 
 def generate_launch_description():
     # Get package directories
@@ -95,14 +96,20 @@ def generate_launch_description():
     )
 
     return LaunchDescription([
-        realsense_launch,
+        # Launch RPLIDAR first
         sllidar_launch,
-        kobuki_launch,
-        slam_toolbox_launch,
-        nav2_launch,
-        tf_to_poses_launch,
-        tf_footprint2base_cmd,
-        fake_bumper_cmd,
-        from_base_to_lidar_cmd,
-        from_base_to_camera_cmd,
+        # Launch RealSense after 2 seconds
+        TimerAction(period=2.0, actions=[realsense_launch]),
+        # Launch Kobuki after 4 seconds
+        TimerAction(period=4.0, actions=[kobuki_launch]),
+        # Launch all remaining nodes in parallel after 6 seconds
+        TimerAction(period=6.0, actions=[
+            tf_footprint2base_cmd,
+            fake_bumper_cmd,
+            from_base_to_lidar_cmd,
+            from_base_to_camera_cmd,
+            tf_to_poses_launch,
+            slam_toolbox_launch,
+            nav2_launch,
+        ]),
     ]) 
