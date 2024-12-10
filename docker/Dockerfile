@@ -67,6 +67,7 @@ WORKDIR /kobuki-drivers-humble/src/robot_launchers
 WORKDIR /kobuki-drivers-humble/src/robot_launchers
 WORKDIR /kobuki-drivers-humble/src/robot_launchers
 WORKDIR /kobuki-drivers-humble/src/robot_launchers
+WORKDIR /kobuki-drivers-humble/src/robot_launchers
 
 
 # Copy tf_to_poses from local machine to container

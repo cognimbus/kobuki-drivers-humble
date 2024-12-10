@@ -1,6 +1,8 @@
 from launch import LaunchDescription
 from launch.actions import IncludeLaunchDescription, TimerAction
 from launch.launch_description_sources import PythonLaunchDescriptionSource
+from launch.substitutions import LaunchConfiguration
+from launch.actions import DeclareLaunchArgument
 from launch_ros.actions import Node
 from ament_index_python.packages import get_package_share_directory
 import os
@@ -9,29 +11,39 @@ def generate_launch_description():
     # Get package directories
     realsense_dir = get_package_share_directory('realsense2_camera')
     kobuki_dir = get_package_share_directory('kobuki')
-    urg_dir = get_package_share_directory('urg_node2')
+    urg_dir = get_package_share_directory('urg_node')  # Changed from sllidar to urg
     slam_toolbox_dir = get_package_share_directory('slam_toolbox')
     nav2_bringup_dir = get_package_share_directory('nav2_bringup')
     tf_to_poses_dir = get_package_share_directory('tf_to_poses')
 
-    # URG Lidar (Qualcomm specific)
-    urg_launch = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(
-            os.path.join(urg_dir, 'launch', 'urg_node2.launch.py')
-        )
-    )
-
-    # Common configurations for both robots
+    # Create launch description objects
     realsense_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
             os.path.join(realsense_dir, 'launch', 'rs_launch.py')
         ),
         launch_arguments={
-            'depth_width': '640',
-            'depth_height': '480',
+            # Reduce RGB resolution and framerate
             'color_width': '640',
             'color_height': '480'
         }.items()
+    )
+
+    # Changed from RPLIDAR to URG
+    urg_launch = Node(
+        package='urg_node',
+        executable='urg_node_driver',
+        name='urg_node',
+        parameters=[{
+            'serial_port': '/dev/ttyACM0',
+            'serial_baud': 115200,
+            'frame_id': 'laser',
+            'angle_min': -1.5708,
+            'angle_max': 1.5708,
+            'skip': 0,
+            'cluster': 1,
+            'publish_intensity': False,
+            'publish_multiecho': False
+        }]
     )
 
     kobuki_launch = IncludeLaunchDescription(
@@ -45,13 +57,17 @@ def generate_launch_description():
             os.path.join(slam_toolbox_dir, 'launch', 'online_async_launch.py')
         ),
         launch_arguments={
-            'max_laser_range': '10.0',  # Increased range for better mapping
-            'transform_timeout': '0.1',  # Reduced timeout for faster processing
-            'update_rate': '10.0',  
-            'enable_interactive_mode': 'false',  # Disable interactive mode for better performance
-            'use_pose_extrapolator': 'true',  # Enable pose extrapolation for smoother mapping
-            'scan_topic': 'scan',  # Explicitly set scan topic
-            'stack_size_to_use': '40000000'  # Increased stack size for better performance
+            'max_laser_range': '10.0',
+            'resolution': '0.05',
+            'transform_timeout': '0.2',
+            'update_rate': '5.0',  # Reduced from default
+            'enable_interactive_mode': 'false',
+            'use_pose_extrapolator': 'true',
+            'scan_topic': 'scan',
+            'stack_size_to_use': '40000000',  # Increased stack size
+            'minimum_time_interval': '0.5',  # Add delay between scans
+            'max_queue_size': '10',  # Limit queue size
+            'throttle_scans': '1',  # Process every nth scan
         }.items()
     )
 
@@ -62,10 +78,15 @@ def generate_launch_description():
         launch_arguments={
             'use_sim_time': 'false',
             'controller_frequency': '10.0',
-            'planner_server_rate': '5.0',
+            'planner_server_rate': '10.0',
             'controller_server_rate': '10.0',
             'global_costmap_publish_rate': '2.0',
-            'local_costmap_publish_rate': '5.0'
+            'local_costmap_publish_rate': '10.0',
+            'bt_navigator_rate': '10.0',
+            'bt_loop_duration': '100',
+            'default_server_timeout': '60.0',
+            'recovery_enabled': 'true',
+            'min_recovery_wait_time': '10.0'
         }.items()
     )
 
@@ -100,7 +121,7 @@ def generate_launch_description():
         package='tf2_ros',
         executable='static_transform_publisher',
         output='screen',
-        arguments=['0.0', '0.0', '0.4', '0.0', '0.0', '0.0', 'base_link', 'laser']
+        arguments=['0.0', '0.0', '0.3', '0.0', '0.0', '0.0', 'base_link', 'laser']
     )
 
     from_base_to_camera_cmd = Node(
