@@ -1,10 +1,8 @@
 from launch import LaunchDescription
-from launch.actions import IncludeLaunchDescription, TimerAction, ExecuteProcess
+from launch.actions import IncludeLaunchDescription, TimerAction
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch_ros.actions import Node
 from ament_index_python.packages import get_package_share_directory
-from launch.event_handlers import OnProcessExit
-from launch.events import Shutdown
 import os
 
 def generate_launch_description():
@@ -88,28 +86,9 @@ def generate_launch_description():
         arguments=['0.15', '0.0', '0.17', '0.0', '0.0', '0.0', 'base_link', 'camera_link']
     )
 
-    # Retry script for URG
-    retry_urg_script = ExecuteProcess(
-        cmd=['bash', '-c', '''
-            while true; do
-                if ! ros2 topic echo /scan -n 1 > /dev/null 2>&1; then
-                    echo "No /scan topic found. Starting URG node directly..."
-                    ros2 run urg_node2 urg_node2_node &
-                    sleep 5
-                else
-                    echo "URG lidar is working!"
-                    sleep 1
-                fi
-            done
-        '''],
-        output='screen'
-    )
-
     return LaunchDescription([
-        # Launch URG with retry mechanism
+        # Launch URG first
         urg_launch,
-        retry_urg_script,
-        
         # Launch RealSense after 2 seconds
         TimerAction(period=2.0, actions=[realsense_launch]),
         # Launch Kobuki after 4 seconds

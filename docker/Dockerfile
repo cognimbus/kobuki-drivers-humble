@@ -59,6 +59,7 @@ FROM cognimbus/kobuki_all_drivers:humble as base
 
 # Start new stage for tf_poses_stage
 FROM base as tf_poses_stage
+WORKDIR /kobuki-drivers-humble/src/robot_launchers/launch
 WORKDIR /kobuki-drivers-humble/src
 WORKDIR /kobuki-drivers-humble/src
 WORKDIR /kobuki-drivers-humble/src
