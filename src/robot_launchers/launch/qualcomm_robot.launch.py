@@ -121,14 +121,13 @@ def generate_launch_description():
         parameters=[{
             'input_topics': ['/cmd_vel_nav', '/cmd_vel'],
             'output_topic': '/cmd_vel_robot',
-            'default_topic': '/cmd_vel_nav'
+            'default_topic': '/cmd_vel'
         }],
         remappings=[
             ('/nav2/cmd_vel', '/cmd_vel_nav'),
             ('/cmd_vel_robot', '/cmd_vel')
         ]
     )
-
 
     return LaunchDescription([
         # Launch URG first
