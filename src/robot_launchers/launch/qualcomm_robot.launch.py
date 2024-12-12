@@ -14,14 +14,6 @@ def generate_launch_description():
     nav2_bringup_dir = get_package_share_directory('nav2_bringup')
     tf_to_poses_dir = get_package_share_directory('tf_to_poses')
 
-    # Create launch description objects (same as your code)
-    urg_launch = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(
-            os.path.join(urg_dir, 'launch', 'urg_node2.launch.py')
-        )
-    )
-
-
     # Create launch description objects
     realsense_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
@@ -40,17 +32,17 @@ def generate_launch_description():
             os.path.join(slam_toolbox_dir, 'launch', 'online_async_launch.py')
         ),
         launch_arguments={
-            'max_laser_range': '10.0',
+            'max_laser_range': '8.0',
             'resolution': '0.05',
             'transform_timeout': '0.2',
-            'update_rate': '5.0',  # Reduced from default
+            'update_rate': '2.0',
             'enable_interactive_mode': 'false',
             'use_pose_extrapolator': 'true',
             'scan_topic': 'scan',
-            'stack_size_to_use': '40000000',  # Increased stack size
-            'minimum_time_interval': '0.5',  # Add delay between scans
-            'max_queue_size': '10',  # Limit queue size
-            'throttle_scans': '1',  # Process every nth scan
+            'stack_size_to_use': '40000000',
+            'minimum_time_interval': '1.0',
+            'max_queue_size': '50',
+            'throttle_scans': '2',
         }.items()
     )
 
@@ -86,7 +78,7 @@ def generate_launch_description():
         }.items()
     )
 
-    # Common transformations and nodes (same as Qualcomm)
+    # Common transformations and nodes
     tf_footprint2base_cmd = Node(
         package='tf2_ros',
         executable='static_transform_publisher',
@@ -129,13 +121,25 @@ def generate_launch_description():
         ]
     )
 
+    # URG launch configuration
+    urg_launch = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(
+            os.path.join(urg_dir, 'launch', 'urg_node2.launch.py')
+        )
+    )
+
     return LaunchDescription([
-        # Launch URG first
-        urg_launch,
-        # Launch RealSense after 2 seconds
-        TimerAction(period=2.0, actions=[realsense_launch]),
-        # Launch Kobuki after 4 seconds
-        TimerAction(period=4.0, actions=[kobuki_launch]),
+        # Launch Kobuki first
+        kobuki_launch,
+        # Launch URG after 2 seconds + 5 seconds internal delay
+        TimerAction(period=2.0, actions=[
+            TimerAction(
+                period=5.0,
+                actions=[urg_launch]
+            )
+        ]),
+        # Launch RealSense after 4 seconds
+        TimerAction(period=4.0, actions=[realsense_launch]),
         # Launch all remaining nodes in parallel after 6 seconds
         TimerAction(period=6.0, actions=[
             tf_footprint2base_cmd,
