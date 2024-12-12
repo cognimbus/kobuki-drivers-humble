@@ -16,17 +16,19 @@ def generate_launch_description():
     nav2_bringup_dir = get_package_share_directory('nav2_bringup')
     tf_to_poses_dir = get_package_share_directory('tf_to_poses')
 
-    # Create launch description objects
+    # Create launch description object with optimized parameters
     realsense_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
             os.path.join(realsense_dir, 'launch', 'rs_launch.py')
         ),
-    launch_arguments={
-        # Reduce RGB resolution and framerate
-        'color_width': '640',
-        'color_height': '480'
+        launch_arguments={
+            # Reduce RGB resolution and frame rate
+            'color_width': '640',       
+            'color_height': '480',   
+            'color_fps': '20',    
         }.items()
     )
+
 
     sllidar_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(

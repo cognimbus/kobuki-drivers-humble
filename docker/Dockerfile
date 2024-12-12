@@ -56,21 +56,13 @@ RUN . /opt/ros/humble/setup.sh && \
     --packages-skip-up-to urg_node2 astra_camera astra_camera_msgs
 
 WORKDIR /kobuki-drivers-humble/src
-WORKDIR /kobuki-drivers-humble/src/robot_launchers
+WORKDIR /kobuki-drivers-humble/src
+WORKDIR /kobuki-drivers-humble/src
 
 RUN apt-get update && apt-get install -y  \
     ros-humble-topic-tools \
     nano
 WORKDIR /kobuki-drivers-humble/src/robot_launchers
-
-WORKDIR /kobuki-drivers-humble/src/robot_launchers
-WORKDIR /kobuki-drivers-humble/src/robot_launchers
-# Start new stage for tf_poses_stage
-WORKDIR /kobuki-drivers-humble/src/robot_launchers
-WORKDIR /kobuki-drivers-humble/src/robot_launchers
-WORKDIR /kobuki-drivers-humble/src/robot_launchers
-WORKDIR /kobuki-drivers-humble/src/robot_launchers
-
 
 # Copy tf_to_poses from local machine to container
 WORKDIR /kobuki-drivers-humble/src
