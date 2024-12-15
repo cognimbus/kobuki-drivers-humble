@@ -22,7 +22,12 @@ def generate_launch_description():
             os.path.join(realsense_dir, 'launch', 'rs_launch.py')
         ),
         launch_arguments={
-            'rgb_camera.profile': '640x480x10',  # Width x Height x FPS
+            # Set RGB profile using a supported format
+            'rgb_camera.profile': '640x480x15',    # WIDTHxHEIGHTxFPS (supported by D455)
+            'rgb_camera.format': 'RGB8',           # Color format
+            'rgb_camera.color_profile': '640x480x15',  # Must match profile
+            
+            # Enable only color stream
             'enable_color': 'true',
             'enable_depth': 'false',
             'enable_infra1': 'false',
@@ -31,7 +36,12 @@ def generate_launch_description():
             'enable_accel': 'false',
             'enable_pointcloud': 'false',
             'align_depth.enable': 'false',
-            'enable_rgbd': 'false'
+            'enable_rgbd': 'false',
+            
+            # Additional settings
+            'initial_reset': 'true',               # Reset camera on start
+            'enable_sync': 'false',
+            'publish_tf': 'false'
         }.items()
     )
 
