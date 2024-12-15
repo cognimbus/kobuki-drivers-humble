@@ -30,10 +30,7 @@ def generate_launch_description():
             'enable_gyro': 'false',
             'enable_accel': 'false',
             'enable_pointcloud': 'false',
-            'enable_sync': 'false',
             'align_depth.enable': 'false',
-            'publish_tf': 'false',
-            'tf_publish_rate': '0.0',
             'enable_rgbd': 'false'
         }.items()
     )
