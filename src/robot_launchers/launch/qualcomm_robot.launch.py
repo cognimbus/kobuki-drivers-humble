@@ -18,8 +18,32 @@ def generate_launch_description():
     realsense_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
             os.path.join(realsense_dir, 'launch', 'rs_launch.py')
-        )
+        ),
+        launch_arguments={
+            # Set RGB profile using a supported format
+            
+            'rgb_camera.profile': '640x480x15',    # WIDTHxHEIGHTxFPS (supported by D455)
+            'rgb_camera.format': 'RGB8',           # Color format
+            'rgb_camera.color_profile': '640x480x15',  # Must match profile
+            '.Realsense.color.image_rect_raw.jpeg_quality': '20',
+            # Enable only color stream
+            'enable_color': 'true',
+            'enable_depth': 'false',
+            'enable_infra1': 'false',
+            'enable_infra2': 'false',
+            'enable_gyro': 'false',
+            'enable_accel': 'false',
+            'enable_pointcloud': 'false',
+            'align_depth.enable': 'false',
+            'enable_rgbd': 'false',
+            
+            # Additional settings
+            'initial_reset': 'true',               # Reset camera on start
+            'enable_sync': 'false',
+            'publish_tf': 'false'
+        }.items()
     )
+
 
     kobuki_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
@@ -32,17 +56,17 @@ def generate_launch_description():
             os.path.join(slam_toolbox_dir, 'launch', 'online_async_launch.py')
         ),
         launch_arguments={
-            'max_laser_range': '8.0',
+            'max_laser_range': '10.0',
             'resolution': '0.05',
             'transform_timeout': '0.2',
-            'update_rate': '2.0',
+            'update_rate': '5.0',  # Reduced from default
             'enable_interactive_mode': 'false',
             'use_pose_extrapolator': 'true',
             'scan_topic': 'scan',
-            'stack_size_to_use': '40000000',
-            'minimum_time_interval': '1.0',
-            'max_queue_size': '50',
-            'throttle_scans': '2',
+            'stack_size_to_use': '40000000',  # Increased stack size
+            'minimum_time_interval': '0.5',  # Add delay between scans
+            'max_queue_size': '10',  # Limit queue size
+            'throttle_scans': '1',  # Process every nth scan
         }.items()
     )
 
@@ -78,7 +102,7 @@ def generate_launch_description():
         }.items()
     )
 
-    # Common transformations and nodes
+    # Common transformations and nodes (same as Qualcomm)
     tf_footprint2base_cmd = Node(
         package='tf2_ros',
         executable='static_transform_publisher',
@@ -96,7 +120,7 @@ def generate_launch_description():
         package='tf2_ros',
         executable='static_transform_publisher',
         output='screen',
-        arguments=['0.0', '0.0', '0.4', '0.0', '0.0', '0.0', 'base_link', 'laser']
+        arguments=['0.0', '0.0', '0.3', '0.0', '0.0', '0.0', 'base_link', 'laser']
     )
 
     from_base_to_camera_cmd = Node(
@@ -134,7 +158,7 @@ def generate_launch_description():
         # Launch URG after 2 seconds + 5 seconds internal delay
         TimerAction(period=2.0, actions=[
             TimerAction(
-                period=5.0,
+                period=3.0,
                 actions=[urg_launch]
             )
         ]),
