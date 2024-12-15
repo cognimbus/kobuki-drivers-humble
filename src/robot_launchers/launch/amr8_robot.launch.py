@@ -22,10 +22,19 @@ def generate_launch_description():
             os.path.join(realsense_dir, 'launch', 'rs_launch.py')
         ),
         launch_arguments={
-            # Reduce RGB resolution and frame rate
-            'color_width': '640',       
-            'color_height': '480',   
-            'color_fps': '20',    
+            'rgb_camera.profile': '640x480x10',  # Width x Height x FPS
+            'enable_color': 'true',
+            'enable_depth': 'false',
+            'enable_infra1': 'false',
+            'enable_infra2': 'false',
+            'enable_gyro': 'false',
+            'enable_accel': 'false',
+            'enable_pointcloud': 'false',
+            'enable_sync': 'false',
+            'align_depth.enable': 'false',
+            'publish_tf': 'false',
+            'tf_publish_rate': '0.0',
+            'enable_rgbd': 'false'
         }.items()
     )
 

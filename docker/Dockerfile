@@ -59,6 +59,7 @@ WORKDIR /kobuki-drivers-humble/src
 WORKDIR /kobuki-drivers-humble/
 WORKDIR /kobuki-drivers-humble/
 WORKDIR /kobuki-drivers-humble/
+WORKDIR /kobuki-drivers-humble/
 
 RUN apt-get update && apt-get install -y  \
     ros-humble-topic-tools \
